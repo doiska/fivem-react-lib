@@ -1,1 +1,1 @@
-export declare const eventNameFactory: (app: string, method: string) => string;
+export declare const eventNameFactory: (app: string, event: string) => string;

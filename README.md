@@ -18,11 +18,11 @@ Use Provider
 import { NuiProvider } from "fivem-nui-react-lib";
 
 function App() {
-  return (
-    <NuiProvider resource="my-resource-name">
-      <div>This is my app</div>
-    </NuiProvider>
-  );
+    return (
+        <NuiProvider resource="my-resource-name">
+            <div>This is my app</div>
+        </NuiProvider>
+    );
 }
 ```
 
@@ -33,7 +33,7 @@ This library receives the following schema on NUI events
 ```js
 {
   app: 'app-name', // can be always the same or change to differenciate events better on the UI
-  method: 'method-name', // the actual event name which is sent to NUI
+  event: 'event-name', // the actual event name which is sent to NUI
   data: 'response' // the response which will be handled from the UI
 }
 ```
@@ -45,17 +45,17 @@ Receive events from client and set your state
 import { useNuiEvent } from "fivem-nui-react-lib";
 
 function MyComponent() {
-  const [myState, setMyState] = useState(false);
-  useNuiEvent("app-name", "method-name", setMyState);
+    const [myState, setMyState] = useState(false);
+    useNuiEvent("app-name", "method-name", setMyState);
 }
 
 // CLIENT
 sendNuiMessage(
-  JSON.stringify({
-    app: "app-name",
-    method: "method-name",
-    data: true, // myState will be set as true in this example
-  })
+    JSON.stringify({
+        app: "app-name",
+        event: "event-name",
+        data: true, // myState will be set as true in this example
+    })
 );
 ```
 
@@ -68,17 +68,17 @@ Send requests to client
 import { useNuiRequest } from "fivem-nui-react-lib";
 
 function MyComponent() {
-  const { send } = useNuiRequest();
-  send("method-name", { myArgument: "isAwesome" });
+    const { send } = useNuiRequest();
+    send("method-name", { myArgument: "isAwesome" });
 }
 
 // CLIENT
 RegisterNuiCallbackType(`__cfx_nui:myEvent`);
 on(`__cfx_nui:myEvent`, (data, cb) => {
-  // Use the arguments
-  emitNet("myEvent", { input: data.myArgument });
-  // Callback to prevent errors
-  cb();
+    // Use the arguments
+    emitNet("myEvent", { input: data.myArgument });
+    // Callback to prevent errors
+    cb();
 });
 ```
 
@@ -91,40 +91,40 @@ Make a callback to "myEvent" by sending back "myEventSuccess" or "myEventError" 
 import { useNuiCallback } from "fivem-nui-react-lib";
 
 function MyComponent() {
-  const [myState, setMyState] = useState(null);
-  const [error, setError] = useState(null);
-  const [fetchMyMethod, { loading }] = useNuiCallback("app-name", "myEvent", setMyState, setError);
+    const [myState, setMyState] = useState(null);
+    const [error, setError] = useState(null);
+    const [fetchMyMethod, { loading }] = useNuiCallback("app-name", "myEvent", setMyState, setError);
 
-  useEffect(() => {
-    fetchMyMethod({ argument: 1 });
-  }, [fetchMyMethod]);
+    useEffect(() => {
+        fetchMyMethod({ argument: 1 });
+    }, [fetchMyMethod]);
 }
 
 // CLIENT
 RegisterNuiCallbackType(`__cfx_nui:myEvent`);
 on(`__cfx_nui:myEvent`, (data, cb) => {
-  // emit some event to the server:
-  emitNet("myEvent", { input: data });
-  // callback so you prevent errors
-  cb();
+    // emit some event to the server:
+    emitNet("myEvent", { input: data });
+    // callback so you prevent errors
+    cb();
 });
 
 // ... on success
 sendNuiMessage(
-  JSON.stringify({
-    app: "app-name",
-    method: "myEventSuccess",
-    data: true,
-  })
+    JSON.stringify({
+        app: "app-name",
+        event: "event:success",
+        data: true,
+    })
 );
 
 // ... on error
 sendNuiMessage(
-  JSON.stringify({
-    app: "app-name",
-    method: "myEventError",
-    data: true,
-  })
+    JSON.stringify({
+        app: "app-name",
+        event: "event:failed",
+        data: true,
+    })
 );
 ```
 
